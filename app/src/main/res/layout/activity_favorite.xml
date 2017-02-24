@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/back_favorite"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        android:drawableLeft="@mipmap/ic_back"/>
+    <TextView
+        android:layout_toRightOf="@+id/back_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        android:text="收藏列表"
+        android:paddingLeft="10dp"
+        android:textColor="#fff"
+        android:textSize="23sp"
+        android:gravity="center_vertical"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/favorite_swipeRefresh"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/back_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+
+        android:id="@+id/favorite_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>
