@@ -38,13 +38,13 @@ import java.util.List;
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHolder> {
     private List<News> mNewses;
     Context mContext;
-    News oneNew;
+    News news;
     String token;
     SharedPreferences mSharedPreferences;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+        News oneNew = new News();
         TextView title;
         TextView content;
         TextView date;
@@ -135,6 +135,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHo
                     Intent intent = new Intent(v.getContext(), AnswerActivity.class);
                     SharedPreferences.Editor editor =
                             mContext.getSharedPreferences("data",mContext.MODE_PRIVATE).edit();
+                    Log.d("HomePageAdapter","qid = "+oneNew.getId());
+
                     editor.putInt("qid",oneNew.getId());
                     editor.putString("Title",oneNew.getTitle());
                     editor.putString("Content",oneNew.getContent());
@@ -354,37 +356,37 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(HomePageAdapter.ViewHolder holder, int position) {
-        oneNew = mNewses.get(position);
-
-        holder.title.setText(oneNew.getTitle());
-        holder.content.setText(oneNew.getContent());
-        holder.date.setText(oneNew.getDate());
-        holder.naive.setText("("+oneNew.getNaive()+")");
-        holder.exciting.setText("("+oneNew.getExciting()+")");
-        holder.huifu.setText("("+oneNew.getAnswerCount()+")");
-        holder.authorName.setText(oneNew.getAuthorName());
-        if (oneNew.getRecent().equals("null")){
-            holder.recent.setText(oneNew.getDate()+" 更新");
-        }else if (!oneNew.getRecent().equals("null")){
-            holder.recent.setText(oneNew.getRecent()+" 更新");
+        news = mNewses.get(position);
+        holder.oneNew = news;
+        holder.title.setText(news.getTitle());
+        holder.content.setText(news.getContent());
+        holder.date.setText(news.getDate());
+        holder.naive.setText("("+news.getNaive()+")");
+        holder.exciting.setText("("+news.getExciting()+")");
+        holder.huifu.setText("("+news.getAnswerCount()+")");
+        holder.authorName.setText(news.getAuthorName());
+        if (news.getRecent().equals("null")){
+            holder.recent.setText(news.getDate()+" 更新");
+        }else if (!news.getRecent().equals("null")){
+            holder.recent.setText(news.getRecent()+" 更新");
         }
-        Glide.with(mContext).load(oneNew.getAuthorAvatar()).into(holder.avater);
-        if (oneNew.is_favorite()){
+        Glide.with(mContext).load(news.getAuthorAvatar()).into(holder.avater);
+        if (news.is_favorite()){
             holder.favorite.setImageResource(R.mipmap.is_favorite);
-        }else if (!oneNew.is_favorite()){
+        }else if (!news.is_favorite()){
             holder.favorite.setImageResource(R.mipmap.not_favorite);
         }
         holder.huiImage.setImageResource(R.mipmap.answer);
-        if (oneNew.is_exciting()){
+        if (news .is_exciting()){
             holder.excitingImage.setImageResource(R.mipmap.is_exciting);
         }
-        else if (!oneNew.is_exciting()){
+        else if (!news.is_exciting()){
             holder.excitingImage.setImageResource(R.mipmap.not_exciting);
         }
-        if (oneNew.is_naive()){
+        if (news.is_naive()){
             holder.naiveImage.setImageResource(R.mipmap.is_naive);
         }
-        else if (!oneNew.is_naive()){
+        else if (!news.is_naive()){
             holder.naiveImage.setImageResource(R.mipmap.not_naive);
         }
 

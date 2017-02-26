@@ -24,8 +24,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hgsil.android.bihu.Adapter.HomePageAdapter;
 import com.hgsil.android.bihu.Information.News;
 import com.hgsil.android.bihu.R;
@@ -38,6 +40,8 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Administrator on 2017/2/7 0007.
  */
@@ -49,9 +53,14 @@ public class NewsActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private HomePageAdapter adapter;
     private RecyclerView recyclerView;
+    String avaterUrl;
+    CircleImageView avatar;
+    TextView userName;
     private Context context;
     private boolean isExit;
-    private boolean isAdd = false;
+    boolean isFirst;
+    boolean isChangeAvater = false ;
+
     Handler mHandler = new Handler(){
         //1为第一次设置adapter 2为拉到底部加载 3为上拉刷新
         @Override
@@ -74,6 +83,9 @@ public class NewsActivity extends AppCompatActivity {
                     adapter.refresh(mNewses);
                     mNewses.clear();
                     break;
+                case 9:
+                    Glide.with(NewsActivity.this).load(avaterUrl).into(avatar);
+                    break;
             }
 
         }
@@ -84,13 +96,23 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
         ActivityManeger.addActivity(this);
+        isFirst= true;
         context = this;
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.news_swipeRefresh);
         recyclerView = (RecyclerView)findViewById(R.id.news_recycler_view);
         final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_newsActivity);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_newsActivity);
+        //设置头像
         final NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
+        View header = navView.inflateHeaderView(R.layout.nav_header);
+        avatar = (CircleImageView)header.findViewById(R.id.nav_avatar);
+        userName = (TextView)header.findViewById(R.id.nav_username);
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        userName.setText(sharedPreferences.getString("mUsername",""));
+        avaterUrl = sharedPreferences.getString("userAvatar","");
+        Glide.with(NewsActivity.this).load(avaterUrl).into(avatar);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -112,6 +134,12 @@ public class NewsActivity extends AppCompatActivity {
                         Intent intent1 = new Intent(NewsActivity.this,FavoriteActivity.class);
                         startActivity(intent1);
                         return true;
+                    case R.id.nav_changeAvater:
+                        isChangeAvater = true;
+                        Intent intent2 = new Intent(NewsActivity.this,ChangeAvaterActivity.class);
+                        startActivity(intent2);
+                        return true;
+
 
                     default:
                         return true;
@@ -156,7 +184,6 @@ public class NewsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewsActivity.this,AddNewsActivity.class);
-                isAdd = true;
                 startActivity(intent);
             }
         });
@@ -247,6 +274,7 @@ public class NewsActivity extends AppCompatActivity {
             oneNew.setContent(jsonObject.getString("content"));
             //发布者头像地址
             oneNew.setAuthorAvatar(jsonObject.getString("authorAvatar"));
+            Log.d("NewsActivity","avatar="+oneNew.getAuthorAvatar());
             //发布者名称
             oneNew.setAuthorName(jsonObject.getString("authorName"));
             //包含图片地址
@@ -286,16 +314,24 @@ public class NewsActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        ActivityManeger.finishAllExceptSelf(this);
+
         //将刚添加的问题加入，然后返回顶部
-        if (isAdd){
-            refresh(0,true);
-            Message message = new Message();
-            message.what = 3;
-            mHandler.sendMessage(message);
-            isAdd = false;
+        if (!isFirst) {
+            refresh(0, true);
             recyclerView.scrollToPosition(0);
+        }else {
+            isFirst = false;
+            ActivityManeger.finishAllExceptSelf(this);
         }
+        if (isChangeAvater){
+            SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+            avaterUrl = sharedPreferences.getString("userAvatar","");
+            Message message = new Message();
+            message.what = 9;
+            mHandler.sendMessage(message);
+            isChangeAvater = false ;
+        }
+
         super.onStart();
     }
 

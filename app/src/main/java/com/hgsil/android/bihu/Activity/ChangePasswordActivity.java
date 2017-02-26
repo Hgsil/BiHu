@@ -3,6 +3,7 @@ package com.hgsil.android.bihu.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -27,6 +28,22 @@ import java.net.HttpURLConnection;
 public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener{
     EditText password;
     SharedPreferences mSharedPreferences ;
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    Toast.makeText(ChangePasswordActivity.this,"修改密码成功",Toast.LENGTH_SHORT).show();
+                    password.setText("");
+                    break;
+                case 2:
+                    Toast.makeText(ChangePasswordActivity.this,"修改密码失败，请检查网络",Toast.LENGTH_SHORT).show();
+                    break;
+
+            }
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +87,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                             +"&password="+password.getText().toString());
                     JSONObject jsonObject = new JSONObject(data);
                     int status = Integer.parseInt(jsonObject.getString("status"));
+                    Message message= new Message();
                     //修改成功 弹出提示
                     if (status == 200) {
                         String newData = jsonObject.getString("data");
@@ -78,15 +96,13 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                         String newToken = jsonObjectData.getString("token");
                         editor.putString("mToken",newToken);
                         editor.apply();
-                        Looper.loop();
-                        Toast.makeText(ChangePasswordActivity.this,"修改密码成功，",Toast.LENGTH_SHORT).show();
-                        Looper.prepare();
+                        message.what = 1;
+                        mHandler.sendMessage(message);
                     }
                     //修改失败 弹出提示
                     else {
-                        Looper.loop();
-                        Toast.makeText(ChangePasswordActivity.this,"修改密码失败，请检查网络",Toast.LENGTH_SHORT).show();
-                        Looper.prepare();
+                       message.what = 2;
+                        mHandler.sendMessage(message);
                     }
                 }catch (Exception e){
                     e.printStackTrace();

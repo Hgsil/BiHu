@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hgsil.android.bihu.Adapter.FavoriteAdapter;
 import com.hgsil.android.bihu.Adapter.HomePageAdapter;
 import com.hgsil.android.bihu.Information.News;
 import com.hgsil.android.bihu.R;
@@ -33,11 +34,13 @@ import java.util.List;
 
 public class FavoriteActivity extends AppCompatActivity {
     private List<News> mNewses = new ArrayList<>();
-    static int page = 0;
+    int page = 0;
     private SwipeRefreshLayout mSwipeRefreshLayout ;
-    private HomePageAdapter adapter;
+    private FavoriteAdapter adapter;
     private RecyclerView recyclerView;
     private Context context;
+    private TextView back;
+    boolean isFirst;
     Handler mHandler = new Handler(){
         //1为第一次设置adapter 2为拉到底部加载 3为上拉刷新
         @Override
@@ -45,7 +48,7 @@ public class FavoriteActivity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    adapter = new HomePageAdapter(mNewses,context);
+                    adapter = new FavoriteAdapter(mNewses,context);
                     recyclerView.setAdapter(adapter);
                     mNewses.clear();
                     break;
@@ -53,12 +56,16 @@ public class FavoriteActivity extends AppCompatActivity {
                     if(mNewses.size() == 0){
                         Toast.makeText(FavoriteActivity.this,"已经没有多的内容了",Toast.LENGTH_SHORT);
                     }
-                    adapter.addItem(mNewses);
-                    mNewses.clear();
+                    else {
+                        adapter.addItem(mNewses);
+                        mNewses.clear();
+                    }
                     break;
                 case 3:
-                    adapter.refresh(mNewses);
-                    mNewses.clear();
+                    if (mNewses.size()!=0) {
+                        adapter.refresh(mNewses);
+                        mNewses.clear();
+                    }
                     break;
             }
 
@@ -72,13 +79,6 @@ public class FavoriteActivity extends AppCompatActivity {
         context = this;
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.favorite_swipeRefresh);
         recyclerView = (RecyclerView)findViewById(R.id.favorite_recycler);
-        TextView back = (TextView)findViewById(R.id.back_favorite);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -88,8 +88,18 @@ public class FavoriteActivity extends AppCompatActivity {
         });
         //第一次自动刷新
         refresh(page,false);
-
+        isFirst = true;
         page++;
+
+        back = (TextView)findViewById(R.id.back_favorite);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFirst =true;
+                page = 0;
+                finish();
+            }
+        });
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -194,8 +204,24 @@ public class FavoriteActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         ActivityManeger.removeActivity(this);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        if (!isFirst){
+            refresh(0,true);
+            recyclerView.scrollToPosition(0);
+        }else
+        isFirst =false;
+        super.onStart();
     }
 }

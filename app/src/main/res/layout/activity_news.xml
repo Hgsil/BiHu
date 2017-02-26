@@ -49,7 +49,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/nav_newsactivity"
-        app:headerLayout="@layout/nav_header" ></android.support.design.widget.NavigationView>
+        ></android.support.design.widget.NavigationView>
 
 
 

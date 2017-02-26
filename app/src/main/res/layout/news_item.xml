@@ -17,8 +17,8 @@
                 android:id="@+id/news_avater"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
-                android:layout_width="70dp"
-                android:layout_height="70dp"/>
+                android:layout_width="65dp"
+                android:layout_height="65dp"/>
             <TextView
                 android:id="@+id/news_username"
                 android:layout_width="wrap_content"
@@ -26,6 +26,7 @@
                 android:layout_marginTop="15dp"
                 android:textSize="16sp"
                 android:layout_toRightOf="@+id/news_avater"
+                android:layout_marginLeft="5dp"
                 android:textColor="#000"
                 />
             <TextView
@@ -33,6 +34,7 @@
                 android:layout_toRightOf="@+id/news_avater"
                 android:layout_below="@+id/news_username"
                 android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:textSize="14sp"

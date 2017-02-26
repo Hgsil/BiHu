@@ -18,6 +18,7 @@ public class News {
     private String images ;
     //发布时间
     private String date;
+
     //最近修改
     public String getRecent() {
         return recent;
@@ -156,5 +157,21 @@ public class News {
 
     public void setContent(String content) {
         this.content = content;
+    }
+    public void giveAll(News news){
+        this.setExciting(news.getExciting());
+        this.setTitle(news.getTitle());
+        this.setIs_favorite(news.is_favorite());
+        this.setAuthorName(news.getAuthorName());
+        this.setDate(news.getDate());
+        this.setRecent(news.getRecent());
+        this.setAnswerCount(news.getAnswerCount());
+        this.setIs_naive(news.is_naive());
+        this.setAuthorAvatar(news.getAuthorAvatar());
+        this.setContent(news.getContent());
+        this.setId(news.getId());
+        this.setNaive(news.getNaive());
+        this.setImages(news.getImages());
+        this.setIs_exciting(news.is_exciting());
     }
 }

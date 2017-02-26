@@ -13,11 +13,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hgsil.android.bihu.Adapter.AnswerAdapter;
 import com.hgsil.android.bihu.Information.Answer;
 import com.hgsil.android.bihu.Information.News;
@@ -38,10 +40,10 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
     private List<Answer> mAnswerList = new ArrayList<>();
     RecyclerView mRecyclerView ;
     AnswerAdapter mAnswerAdapter;
-    boolean isAdd =false;
+    boolean isFirst;
     int page = 0;
     Context mContext;
-    News oneNew;
+    News oneNew = new News();
     TextView title;
     TextView content;
     TextView date;
@@ -52,6 +54,7 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
     TextView exciting;
     de.hdodenhof.circleimageview.CircleImageView avater;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    TextView back;
     ImageView huiImage;
     ImageView excitingImage;
     ImageView naiveImage;
@@ -130,10 +133,13 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         ActivityManeger.addActivity(this);
         setContentView(R.layout.activity_answer);
+        isFirst = true;
         mContext = this;
         mSharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
         mEditor = getSharedPreferences("data",MODE_PRIVATE).edit();
         mRecyclerView = (RecyclerView)findViewById(R.id.answer_recycler);
+        back = (TextView)findViewById(R.id.back_answer);
+        back.setOnClickListener(this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(layoutManager);
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.answer_swipeRefresh);
@@ -155,6 +161,7 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+
                 if (newState ==RecyclerView.SCROLL_STATE_IDLE &&
                         lastVisibleItem+ 1 ==mAnswerAdapter.getItemCount()){
                     refresh(page,false);
@@ -174,7 +181,6 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
             public void onClick(View v) {
                 Intent intent = new Intent(AnswerActivity.this,AddAnswerActivity.class);
                 intent.putExtra("qid",oneNew.getId());
-                isAdd = true;
                 startActivity(intent);
             }
         });
@@ -211,6 +217,9 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
                 }else {
                     setExcitingOrNaive("favorite",oneNew.getId());
                 }break;
+            case R.id.back_answer:
+                finish();
+                break;
         }
     }
     private void refresh(int page, final boolean isShangLaOrAdd){
@@ -237,10 +246,10 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
                         }
                         String returnData = jsonObject.getString("data");
                         JSONObject jsonObjectData = new JSONObject(returnData);
-                        JSONArray jsonQuestions = jsonObjectData.getJSONArray("answer");
-                        for (int i = 0; i < jsonQuestions.length(); i++) {
-                            JSONObject jsonAnswer = jsonQuestions.getJSONObject(i);
-                            answerListSetOneAnswer(jsonAnswer,mAnswerList);
+                        JSONArray jsonAnswers = jsonObjectData.getJSONArray("answers");
+                        for (int i = 0; i < jsonAnswers.length(); i++) {
+                            JSONObject jsonAnswer = jsonAnswers.getJSONObject(i);
+                            answerListSetOneAnswer(jsonAnswer);
 
                         }
                         mHandler.sendMessage(message);
@@ -437,11 +446,31 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
         date.setText(oneNew.getDate());
         naive.setText("("+oneNew.getNaive()+")");
         exciting.setText("("+oneNew.getExciting()+")");
+        huifu.setText("("+oneNew.getAnswerCount()+")");
+        if (!oneNew.getRecent().equals("null"))
         recent.setText(oneNew.getRecent()+ " 更新");
+        else
+            recent.setText( " 无更新");
         authorName.setText(oneNew.getAuthorName());
+        Glide.with(mContext).load(oneNew.getAuthorAvatar()).into(avater);
+        if (oneNew.is_exciting()){
+            excitingImage.setImageResource(R.mipmap.is_exciting);
+        }else {
+            excitingImage.setImageResource(R.mipmap.not_exciting);
+        }
+        if (oneNew.is_naive()){
+            naiveImage.setImageResource(R.mipmap.is_naive);
+        }else {
+            naiveImage.setImageResource(R.mipmap.not_naive);
+        }
+        if (oneNew.is_favorite()){
+            favorite.setImageResource(R.mipmap.is_favorite);
+        }else {
+            favorite.setImageResource(R.mipmap.not_favorite);
+        }
+        huiImage.setImageResource(R.mipmap.answer);
     }
     public void setOneNew(){
-        //好像说这里id没存进去  qid在HomePageAdapter里面的OnClick中写入
         oneNew.setId(mSharedPreferences.getInt("qid",0));
         oneNew.setIs_exciting(mSharedPreferences.getBoolean("IsExciting",false));
         oneNew.setIs_naive(mSharedPreferences.getBoolean("IsNaive",false));
@@ -453,14 +482,14 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
         oneNew.setDate(mSharedPreferences.getString("Date",""));
         oneNew.setRecent(mSharedPreferences.getString("Recent",""));
         oneNew.setAuthorName(mSharedPreferences.getString("authorName",""));
+        oneNew.setAnswerCount(mSharedPreferences.getInt("AnswerCount",0));
+        oneNew.setAuthorAvatar(mSharedPreferences.getString("Avatar",""));
     }
-    public void answerListSetOneAnswer(JSONObject jsonObject,List<Answer> answers){
+    public void answerListSetOneAnswer(JSONObject jsonObject){
         Answer oneAnswer= new Answer();
         try {
             //编号
             oneAnswer.setId(jsonObject.getInt("id"));
-            //标题
-            oneAnswer.setTitle(jsonObject.getString("title"));
             //内容
             oneAnswer.setContent(jsonObject.getString("content"));
             //发布者头像地址
@@ -475,6 +504,7 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
             oneAnswer.setExciting(jsonObject.getInt("exciting"));
             //讨厌人数
             oneAnswer.setNaive(jsonObject.getInt("naive"));
+            Log.d("AnswerActivity","content="+oneAnswer.getExciting());
             //该用户是否喜欢
             oneAnswer.setIs_exciting(jsonObject.getBoolean("is_exciting"));
             //该用户是否讨厌
@@ -484,18 +514,16 @@ public class AnswerActivity  extends AppCompatActivity implements View.OnClickLi
         }catch (Exception e){
             e.printStackTrace();
         }
-        answers.add(oneAnswer);
+        mAnswerList.add(oneAnswer);
     }
 
     @Override
     protected void onStart() {
-        if (isAdd){
-            refresh(0,true);
-            Message message = new Message();
-            message.what = 9;
-            mHandler.sendMessage(message);
-            isAdd = false;
+        if (!isFirst) {
+            refresh(0, true);
             mRecyclerView.scrollToPosition(0);
+        }else {
+            isFirst = false;
         }
         super.onStart();
     }

@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText password;
     String token;
     private boolean isExit;
+    String avatar;
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -87,9 +88,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         JSONObject jsonObjectData = new JSONObject(jsonObject.getString("data"));
                         SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
                         token = jsonObjectData.getString("token");
+                        avatar = jsonObjectData.getString("avatar");
                         String mUsername = jsonObjectData.getString("username");
                         editor.putString("mToken",token);
                         editor.putString("mUsername",mUsername);
+                        editor.putString("userAvatar",avatar);
                         editor.apply();
                         Intent intent = new Intent(LoginActivity.this,NewsActivity.class);
                         startActivity(intent);
