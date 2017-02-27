@@ -42,6 +42,7 @@
         android:maxLength="15"
         android:maxLines="1"
         />
+
     <TextView
         android:id="@+id/content_text_addnews"
         android:layout_width="wrap_content"
@@ -63,15 +64,7 @@
         android:layout_marginTop="9dp"
         android:maxLines="5"
         />
-    <TextView
-        android:id="@+id/addphoto_addnews"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/content_edit_addnews"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:text="添加图片"
-        android:textSize="14sp"/>
+
     <TextView
         android:id="@+id/add_addnews"
         android:layout_width="match_parent"

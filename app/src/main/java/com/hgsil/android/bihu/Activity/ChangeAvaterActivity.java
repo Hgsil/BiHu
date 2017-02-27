@@ -45,7 +45,6 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
     //要上传的空间
     String bucketname = "bihuavatar";
     //上传到七牛后保存的文件名
-    String key ;
     String userName;
     //上传文件的路径
     String path;
@@ -81,7 +80,7 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
         SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
         mToken = sharedPreferences.getString("mToken","");
         userName = sharedPreferences.getString("mUsername","");
-        key = userName;
+
         openPhoto = (TextView)findViewById(R.id.changeAvater_fromphoto);
         changeAvater = (TextView)findViewById(R.id.changeAvater);
         mAvater = (de.hdodenhof.circleimageview.CircleImageView)findViewById(R.id.changeAvater_cirecleview);
@@ -194,7 +193,6 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
             e.printStackTrace();
         }
     }
-
     public byte[] getBytes(InputStream is)  {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] b = new byte[2048];
