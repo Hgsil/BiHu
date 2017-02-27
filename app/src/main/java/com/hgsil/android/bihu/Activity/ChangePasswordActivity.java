@@ -48,9 +48,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityManeger.addActivity(this);
-        setContentView(R.layout.activity_forgetpassword);
-        TextView confirm = (TextView)findViewById(R.id.confirm_forget);
-        password = (EditText)findViewById(R.id.password_forget);
+        setContentView(R.layout.activity_changepassword);
+        TextView confirm = (TextView)findViewById(R.id.confirm_changePassword);
+        password = (EditText)findViewById(R.id.password_changePassword);
         mSharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
         TextView back = (TextView)findViewById(R.id.back_changePassword);
         confirm.setOnClickListener(this);
@@ -66,7 +66,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.confirm_forget:
+            case R.id.confirm_changePassword:
                 sendRequestWithHttpURLConnection();
                 break;
             case R.id.back_changePassword:
@@ -79,7 +79,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection =null;
 
                 try{
                     String url = new String("https://api.caoyue.com.cn/bihu/changePassword.php");

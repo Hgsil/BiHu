@@ -68,6 +68,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId()==R.id.button_login){
             sendRequestWithHttpURLConnection();
         }
+        if (v.getId()==R.id.forgetpassword_login);{
+            Intent intent = new Intent(LoginActivity.this,FindPasswordAcitivity.class);
+            startActivity(intent);
+        }
     }
 
     private void sendRequestWithHttpURLConnection(){
@@ -92,6 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         String mUsername = jsonObjectData.getString("username");
                         editor.putString("mToken",token);
                         editor.putString("mUsername",mUsername);
+                        editor.putString(mUsername,password.getText().toString());
                         editor.putString("userAvatar",avatar);
                         editor.apply();
                         Intent intent = new Intent(LoginActivity.this,NewsActivity.class);
