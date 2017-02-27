@@ -39,7 +39,7 @@
         android:layout_marginTop="38dp"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:layout_marginLeft="15dp"/>
+        android:layout_marginLeft="10dp"/>
     <TextView
         android:id="@+id/CN"
         android:layout_width="wrap_content"
