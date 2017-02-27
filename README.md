@@ -16,7 +16,10 @@ Hgsil 的辣鸡逼乎
 ###8.[修改头像](https://github.com/Hgsil/BiHu/blob/master/app/src/main/java/com/hgsil/android/bihu/Activity/ChangeAvaterActivity.java)  
 ###9.[修改密码](https://github.com/Hgsil/BiHu/blob/master/app/src/main/java/com/hgsil/android/bihu/Activity/ChangePasswordActivity.java)  
 ###10.[回答列表](https://github.com/Hgsil/BiHu/blob/master/app/src/main/java/com/hgsil/android/bihu/Activity/AnswerActivity.java)  
-###11.[添加回答](https://github.com/Hgsil/BiHu/blob/master/app/src/main/java/com/hgsil/android/bihu/Activity/AddAnswerActivity.java)  
-一样的，点击回答列表中的Float  
+###11.[添加回答](https://github.com/Hgsil/BiHu/blob/master/app/src/main/java/com/hgsil/android/bihu/Activity/AddAnswerActivity.java) 
+
+一样的，点击回答列表中的Float
+###12.[找回密码](https://github.com/Hgsil/BiHu/blob/master/app/src/main/java/com/hgsil/android/bihu/Activity/FindPasswordActivity.java)
+用的本地储存。。所以要登陆一次才有记录。。（不知道为什么。。11 12前面有颜色了。。）
 那个。。每个回答加图片那里没时间写了。。这学期一定好好学习 恩！
 ---------
