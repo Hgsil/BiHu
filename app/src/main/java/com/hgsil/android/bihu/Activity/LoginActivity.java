@@ -48,11 +48,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra("isBackToLogin",false)){
+            ActivityManeger.finishAllExceptSelf(this);
+        }
         TextView gotocreate = (TextView)findViewById(R.id.gotocreate_login);
         TextView login = (TextView)findViewById(R.id.button_login);
         username = (EditText)findViewById(R.id.number_login);
         password = (EditText)findViewById(R.id.password_login);
         password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        TextView forgetPassword = (TextView)findViewById(R.id.forgetpassword_login);
+        forgetPassword.setOnClickListener(this);
         gotocreate.setOnClickListener(this);
         login.setOnClickListener(this);
         ActivityManeger.addActivity(this);
@@ -68,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (v.getId()==R.id.button_login){
             sendRequestWithHttpURLConnection();
         }
-        if (v.getId()==R.id.forgetpassword_login);{
+        if (v.getId()==R.id.forgetpassword_login){
             Intent intent = new Intent(LoginActivity.this,FindPasswordAcitivity.class);
             startActivity(intent);
         }

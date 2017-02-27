@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class FindPasswordAcitivity extends AppCompatActivity{
 
                 SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
                 password = sharedPreferences.getString(mUsername.getText().toString(),"");
+                Log.d("FindPasswordAcitivity",password);
                 if (!password.equals(null))
                 mPassword.setText(password);
                 else {

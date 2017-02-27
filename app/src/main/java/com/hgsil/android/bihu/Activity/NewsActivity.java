@@ -48,7 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewsActivity extends AppCompatActivity {
     private List<News> mNewses = new ArrayList<>();
-    static int page = 0;
+    int page = 0;
     private SwipeRefreshLayout mSwipeRefreshLayout ;
     private DrawerLayout mDrawerLayout;
     private HomePageAdapter adapter;
@@ -59,6 +59,7 @@ public class NewsActivity extends AppCompatActivity {
     private Context context;
     private boolean isExit;
     boolean isFirst;
+    boolean isBackToLogin = false;
     boolean isChangeAvater = false ;
 
     Handler mHandler = new Handler(){
@@ -138,6 +139,10 @@ public class NewsActivity extends AppCompatActivity {
                         isChangeAvater = true;
                         Intent intent2 = new Intent(NewsActivity.this,ChangeAvaterActivity.class);
                         startActivity(intent2);
+                        return true;
+                    case R.id.nav_backToLogin:
+                        isBackToLogin = true;
+                        finish();
                         return true;
 
 
@@ -237,9 +242,16 @@ public class NewsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        if (isBackToLogin)
+        {
+            Intent intent = new Intent(NewsActivity.this,LoginActivity.class);
+            intent.putExtra("isBackToLogin",true);
+            startActivity(intent);
+        }
         ActivityManeger.removeActivity(this);
+        super.onDestroy();
     }
+
     //双击退出程序
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

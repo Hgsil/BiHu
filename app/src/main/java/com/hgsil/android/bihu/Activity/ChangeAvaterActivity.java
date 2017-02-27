@@ -136,9 +136,7 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
 
         }
         else {
-
-            path = data.getDataString();
-            Bitmap bm = null;
+           Bitmap bm = null;
             //外界的程序访问ContentProvider所提供数据 可以通过ContentResolver接口
             ContentResolver resolver = getContentResolver();
             //此处的用于判断接收的Activity是不是你想要的那个
@@ -147,12 +145,9 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
                     Uri originalUri = data.getData();        //获得图片的uri
 
                     bm = MediaStore.Images.Media.getBitmap(resolver, originalUri);        //显得到bitmap图片
-
-
                     String[] proj = {MediaStore.Images.Media.DATA};
-
                     //好像是Android多媒体数据库的封装接口，具体的看Android文档
-                    Cursor cursor = managedQuery(originalUri, proj, null, null, null);
+                    Cursor cursor = this.getContentResolver().query(originalUri, proj, null, null, null);
                     //按我个人理解 这个是获得用户选择的图片的索引值
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     //将光标移至开头 ，这个很重要，不小心很容易引起越界
@@ -180,7 +175,7 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
             uploadManager
                     .put(bytes,
                             userName,
-                            getUpToken(),
+                            auth.uploadToken(bucketname),
                             new UpCompletionHandler() {
                                 @Override
                                 public void complete(String key,
@@ -199,11 +194,6 @@ public class ChangeAvaterActivity extends AppCompatActivity implements View.OnCl
             e.printStackTrace();
         }
     }
-
-    public String getUpToken(){
-
-            return auth.uploadToken(bucketname);
-        }
 
     public byte[] getBytes(InputStream is)  {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
